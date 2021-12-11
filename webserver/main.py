@@ -4,10 +4,37 @@ import time
 hostName = "0.0.0.0"
 serverPort = 8080
 
-class EpeeScoringServer(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
+# Use placeholders for now, later this can be set through a request
+player1 = "Player1"
+id1 = "1"
+player2 = "Player2"
+id2 = "2"
 
+class EpeeScoringServer(BaseHTTPRequestHandler):
+    def read_file(self, id):
+        fencer_score_file = 'fencer#' + id + "_score.txt"
+        try:
+            with open( fencer_score_file , 'r' ) as fle:
+                score = int( fle.readline() )
+        except FileNotFoundError:
+            score = 0
+        return score
+
+    def do_GET(self):
+        score1 = self.read_file(id1)
+        score2 = self.read_file(id2)
+        
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(bytes("<html><head><title>https://pythonbasics.org</title></head>", "utf-8"))
+        self.wfile.write(bytes("<body>", "utf-8"))
+        self.wfile.write(bytes("<center><h1>Live Dashboard</h1></center>", "utf-8"))
+        self.wfile.write(bytes("<div class='row'>", "utf-8"))
+        self.wfile.write(bytes("<div class='column' style='text-align: center;'><h2>" + player1 + "</h2><p> " + str(score1) + "</p></div>", "utf-8"))
+        self.wfile.write(bytes("<div class='column' style='text-align: center;'><h2>" + player2 + "</h2><p> " + str(score2) + "</p></div>", "utf-8"))
+        self.wfile.write(bytes("</div>", "utf-8"))
+        self.wfile.write(bytes("</body></html>", "utf-8"))
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
