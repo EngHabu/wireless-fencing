@@ -3,9 +3,11 @@ import time
 
 hostName = "0.0.0.0"
 serverPort = 8080
-player1 = "Sama Abuelfutuh"
+
+# Use placeholders for now, later this can be set through a request
+player1 = "Player1"
 id1 = "1"
-player2 = "Zeina Abdelwareth"
+player2 = "Player2"
 id2 = "2"
 
 class EpeeScoringServer(BaseHTTPRequestHandler):
