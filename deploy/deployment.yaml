@@ -25,7 +25,7 @@ spec:
         - name: fencing
           image: fencing
           imagePullPolicy: IfNotPresent
-          args:
+          command:
             - sleep
             - "10000"
           ports:
