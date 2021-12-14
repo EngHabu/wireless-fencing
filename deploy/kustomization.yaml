@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+
+# Images that should be used
+images:
+  # FlyteAdmin
+  - name: fencing # match images with this name
+    newTag: 5202e962fa663e2de62c61d6c42a64c8bc93874d # override the tag
+    newName: ghcr.io/enghabu/wireless-fencing # override the name
