@@ -25,6 +25,9 @@ spec:
         - name: fencing
           image: fencing
           imagePullPolicy: IfNotPresent
+          args:
+            - sleep
+            - "10000"
           ports:
             - containerPort: 8080
           volumeMounts:
