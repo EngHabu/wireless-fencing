@@ -28,6 +28,8 @@ spec:
           command:
             - sleep
             - "10000"
+          args:
+            - ""
           ports:
             - containerPort: 8080
           volumeMounts:
