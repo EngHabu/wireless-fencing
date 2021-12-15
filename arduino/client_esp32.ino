@@ -54,20 +54,10 @@ void setup()
   Serial.println(WiFi.RSSI());
 }
 
-int x = 1;
-
 void loop()
 {
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
-
-  if (x < 10)
-  {
-    Serial.print("Sending point");
-    reportPoint();
-    Serial.print("Sent");
-    x++;
-  }
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH)
