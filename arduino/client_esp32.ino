@@ -12,7 +12,7 @@ int status = WL_IDLE_STATUS;
 // if you don't want to use DNS (and reduce your sketch size)
 // use the numeric IP instead of the name for the server:
 //IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
-const char *server = "www.google.com"; // name address for Google (using DNS)
+const char *server = "http://libki.local:31622"; // name address for Google (using DNS)
 String userID = "1";
 
 // Initialize the Ethernet client library
@@ -54,10 +54,20 @@ void setup()
   Serial.println(WiFi.RSSI());
 }
 
+int x = 1;
+
 void loop()
 {
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
+
+  if (x < 10)
+  {
+    Serial.print("Sending point");
+    reportPoint();
+    Serial.print("Sent");
+    x++;
+  }
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH)
@@ -75,11 +85,10 @@ void loop()
 
 void reportPoint()
 {
-  WiFiClient client;
   HTTPClient http;
 
   // Your Domain name with URL path or IP address with path
-  http.begin(client, server);
+  http.begin(server);
 
   // Specify content-type header
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
