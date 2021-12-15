@@ -11,5 +11,5 @@ resources:
 images:
   # FlyteAdmin
   - name: fencing # match images with this name
-    newTag: 5202e962fa663e2de62c61d6c42a64c8bc93874d # override the tag
+    newTag: 2c4c69614d2656e28b60db9aba75bebe0452be03 # override the tag
     newName: ghcr.io/enghabu/wireless-fencing # override the name
