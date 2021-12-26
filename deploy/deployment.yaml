@@ -1,0 +1,39 @@
+# Create the actual deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fencing
+  namespace: fencing
+  labels:
+    app: fencing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fencing
+  template:
+    metadata:
+      labels:
+        app: fencing
+        app.kubernetes.io/name: fencing
+        app.kubernetes.io/version: 0.3.4
+    spec:
+      volumes:
+        - emptyDir: {}
+          name: scratch
+      containers:
+        - name: fencing
+          image: fencing
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 200m
+            limits:
+              memory: 100Mi
+              cpu: 200m
