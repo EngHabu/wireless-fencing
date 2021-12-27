@@ -47,11 +47,11 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
         print("Received input: {}".format(body))
         body_as_string = body.decode("utf-8") 
 
-        # There are always 2 oponents in fencing Each will have their point
-        # stored in a separate file When each scores, an id will be sent to the
+        # There are always 2 oponents in fencing. Each will have their point
+        # stored in a separate file. When each scores, an id will be sent to the
         # scoring server which will then increment the counter for that oponent
         # id The dashboard will be responsible for reading the scores and
-        # declaring a winner
+        # declaring a winner.
 
         # body comes in format id=<id>
         id = body_as_string.split("=")[1]
@@ -64,14 +64,14 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
         time_delta_in_milliseconds = (current_time - last_touch_time).total_seconds() * 1000
 
         # Do not record a point if the touch came from same fencer within a
-        # second or after more than 40 ms for other fencer (review fencing
-        # rules)
+        # second, or from another fencer within
+        # double_touch_milliseconds_threshold (review fencing rules)
         ignore_point = False
-        double_touch_milliseconds = 40
-        if double_touch_milliseconds <= time_delta_in_milliseconds <= 1000 and last_touch_fencer_id != id:
-            print("Other fencer scored, but too late!")
+        double_touch_milliseconds_threshold = 40
+        if double_touch_milliseconds_threshold <= time_delta_in_milliseconds <= 1000 and last_touch_fencer_id != id:
+            print("Other fencer touch, but too late!")
             ignore_point = True
-        if time_delta_in_milliseconds < double_touch_milliseconds and last_touch_fencer_id == id:
+        if time_delta_in_milliseconds < double_touch_milliseconds_threshold and last_touch_fencer_id == id:
             print("Same fencer touch, ignore touch!")
             ignore_point = True
 
