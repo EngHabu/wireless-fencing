@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import time
+import datetime
 
 hostName = "0.0.0.0"
 serverPort = 8080
@@ -9,6 +9,10 @@ player1 = "Player1"
 id1 = "1"
 player2 = "Player2"
 id2 = "2"
+
+# To prevent multi point counts
+last_touch_time = datetime.datetime.now()
+last_touch_fencer_id = ""
 
 class EpeeScoringServer(BaseHTTPRequestHandler):
     def read_file(self, id):
@@ -21,12 +25,13 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
         return score
 
     def do_GET(self):
-        score1 = self.read_file(id1)
-        score2 = self.read_file(id2)
-        
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
+        
+        score1 = self.read_file(id1)
+        score2 = self.read_file(id2)
+        
         self.wfile.write(bytes("<html><head><title>https://pythonbasics.org</title></head>", "utf-8"))
         self.wfile.write(bytes("<body>", "utf-8"))
         self.wfile.write(bytes("<center><h1>Live Dashboard</h1></center>", "utf-8"))
@@ -42,25 +47,49 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
         print("Received input: {}".format(body))
         body_as_string = body.decode("utf-8") 
 
-        # There are always 2 oponents in fencing
-        # Each will have their point stored in a separate file
-        # When each scores, an id will be sent to the scoring server
-        # which will then increment the counter for that oponent id
-        # The dashboard will be responsible for reading the scores
-        # and declaring a winner
+        # There are always 2 oponents in fencing Each will have their point
+        # stored in a separate file When each scores, an id will be sent to the
+        # scoring server which will then increment the counter for that oponent
+        # id The dashboard will be responsible for reading the scores and
+        # declaring a winner
 
         # body comes in format id=<id>
         id = body_as_string.split("=")[1]
         fencer_score_file = 'fencer#' + id + "_score.txt"
-        print("Point scored from fencer#" + id)
+        print("Touch from fencer#" + id)
+
+        global lastScoredPointTime
+        global lastScoredPointId
+        current_time = datetime.datetime.now()
+        time_delta_in_milliseconds = (current_time - last_touch_time).total_seconds() * 1000
+
+        # Do not record a point if the touch came from same fencer within a
+        # second or after more than 40 ms for other fencer (review fencing
+        # rules)
+        ignore_point = False
+        double_touch_milliseconds = 40
+        if double_touch_milliseconds <= time_delta_in_milliseconds <= 1000 and last_touch_fencer_id != id:
+            print("Other fencer scored, but too late!")
+            ignore_point = True
+        if time_delta_in_milliseconds < double_touch_milliseconds and last_touch_fencer_id == id:
+            print("Same fencer touch, ignore touch!")
+            ignore_point = True
 
         self.send_response(200)
         self.send_header('content-type','text/html')
         self.end_headers()
 
+        if ignore_point:
+            print("Touch ignored!")
+            return
+
+        lastScoredPointId = id
+        lastScoredPointTime = current_time
+
         try:
             with open( fencer_score_file , 'r' ) as fle:
                 score = int( fle.readline() ) + 1
+                print("Point scored for fencer#" + id)
         except FileNotFoundError:
             score = 1
             print("First point for fencer#" + id)
