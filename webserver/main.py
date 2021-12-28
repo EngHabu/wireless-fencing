@@ -11,8 +11,8 @@ player2 = "Player2"
 id2 = "2"
 
 # To prevent multi point counts
-DOUBLE_TOUCH_MILLISECONDS_THRESHOLD = 40
-MIN_TIME_BETWEEN_TOUCHES = 1000  # set as an upper limit to fencer recording another point
+DOUBLE_TOUCH_THRESHOLD_MILLISECONDS = 40
+MIN_TIME_BETWEEN_TOUCHES_MILLISECONDS = 1000  # set as an upper limit to fencer recording another point
 
 last_touch_time = datetime.datetime.now()
 last_touch_fencer_id = ""
@@ -68,13 +68,13 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
 
         # Do not record a point if the touch came from same fencer within a
         # second, or from another fencer within
-        # double_touch_milliseconds_threshold (review fencing rules)
+        # DOUBLE_TOUCH_THRESHOLD_MILLISECONDS (review fencing rules)
         ignore_point = False
 
-        if DOUBLE_TOUCH_MILLISECONDS_THRESHOLD <= time_delta_in_milliseconds <= MIN_TIME_BETWEEN_TOUCHES and last_touch_fencer_id != id:
+        if DOUBLE_TOUCH_THRESHOLD_MILLISECONDS <= time_delta_in_milliseconds <= MIN_TIME_BETWEEN_TOUCHES_MILLISECONDS and last_touch_fencer_id != id:
             print("Other fencer touch, but too late!")
             ignore_point = True
-        if time_delta_in_milliseconds < MIN_TIME_BETWEEN_TOUCHES and last_touch_fencer_id == id:
+        if time_delta_in_milliseconds < MIN_TIME_BETWEEN_TOUCHES_MILLISECONDS and last_touch_fencer_id == id:
             print("Same fencer touch, ignore touch!")
             ignore_point = True
 
