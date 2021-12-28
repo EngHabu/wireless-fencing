@@ -58,8 +58,8 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
         fencer_score_file = 'fencer#' + id + "_score.txt"
         print("Touch from fencer#" + id)
 
-        global lastScoredPointTime
-        global lastScoredPointId
+        global last_touch_time
+        global last_touch_fencer_id
         current_time = datetime.datetime.now()
         time_delta_in_milliseconds = (current_time - last_touch_time).total_seconds() * 1000
 
@@ -68,10 +68,12 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
         # double_touch_milliseconds_threshold (review fencing rules)
         ignore_point = False
         double_touch_milliseconds_threshold = 40
-        if double_touch_milliseconds_threshold <= time_delta_in_milliseconds <= 1000 and last_touch_fencer_id != id:
+        min_time_between_touches = 1000  # set as an upper limit to fencer recording another point
+
+        if double_touch_milliseconds_threshold <= time_delta_in_milliseconds <= min_time_between_touches and last_touch_fencer_id != id:
             print("Other fencer touch, but too late!")
             ignore_point = True
-        if time_delta_in_milliseconds < double_touch_milliseconds_threshold and last_touch_fencer_id == id:
+        if time_delta_in_milliseconds < min_time_between_touches and last_touch_fencer_id == id:
             print("Same fencer touch, ignore touch!")
             ignore_point = True
 
@@ -83,8 +85,8 @@ class EpeeScoringServer(BaseHTTPRequestHandler):
             print("Touch ignored!")
             return
 
-        lastScoredPointId = id
-        lastScoredPointTime = current_time
+        last_touch_fencer_id = id
+        last_touch_time = current_time
 
         try:
             with open( fencer_score_file , 'r' ) as fle:
