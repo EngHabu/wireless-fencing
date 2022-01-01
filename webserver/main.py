@@ -6,6 +6,7 @@ import os
 import threading
 import time
 import asyncio
+from fastapi.staticfiles import StaticFiles
 
 class Event_ts(asyncio.Event):
     #TODO: clear() method
@@ -14,6 +15,7 @@ class Event_ts(asyncio.Event):
         self._loop.call_soon_threadsafe(super().set)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="webserver/static"), name="static")
 
 hostName = "0.0.0.0"
 serverPort = 8080

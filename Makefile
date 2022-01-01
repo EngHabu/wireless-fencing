@@ -10,4 +10,4 @@ docker_run: docker_build
 	docker run -p 8080:8080 ghcr.io/enghabu/wireless-fencing:$(GIT_COMMIT)
 
 start-server:
-	cd webserver && python -m uvicorn main:app --reload
+	python -m uvicorn webserver.main:app --reload
