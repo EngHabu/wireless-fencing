@@ -68,7 +68,7 @@
       var ws_scheme = "ws://"
     };
 
-    var ws = new ReconnectingWebSocket(ws_scheme + location.host + "/ws");
+    var ws = new WebSocket(ws_scheme + location.host + "/ws");
     ws.onmessage = function (event) {
       var fencer1_name = document.getElementById('fencer1_name')
       var fencer1_score = document.getElementById('fencer1_score')
