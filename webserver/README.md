@@ -18,7 +18,9 @@ The web server hangs when a point is recorded while the websocket is open, still
 Use of 1 second timer instead of event based as a stop-gap, using events makes the webserver unresponsive.
 The fencers html needs to be updated to use the newgame API instead of using websockets.
 After fencers info is entered, redirect the user to the live scoreboard.
-Rendering a local git images doesn't work, for now an online version is used.
+Rendering a local gif images doesn't work, for now an online version is used.
 Add a decrement score API.
 Add a fencer class that encapsulates the id, name & score.
 Prettier UI
+Move css to a separate file
+Handle bad input (fencer id not 1 or 2, score going above 15)
