@@ -35,11 +35,11 @@ point_scored = Event_ts()
 
 @app.get("/")
 async def get():
-    return HTMLResponse(get_html("pages/scoreboard.html"))
+    return HTMLResponse(get_html("webserver/pages/scoreboard.html"))
 
 @app.get("/fencers")
 async def get():
-    return HTMLResponse(get_html("pages/fencers.html"))
+    return HTMLResponse(get_html("webserver/pages/fencers.html"))
 
 @app.get("/newgame")
 async def get(fencer1_name: str, fencer2_name: str):
