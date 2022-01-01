@@ -43,7 +43,7 @@ async def get():
 async def get():
     return HTMLResponse(get_html("webserver/pages/fencers.html"))
 
-@app.get("/newgame")
+@app.get("/newbout")
 async def get(fencer1_name: str, fencer2_name: str):
     global fencer1, fencer2
 
@@ -62,8 +62,6 @@ async def get(id: str):
     # scoring server which will then increment the counter for that oponent
     # id The scoreboard will be responsible for reading the scores and
     # declaring a winner.
-
-    # body comes in format id=<id>
     print("Touch from fencer#" + id)
 
     if is_touch_invalid(id):
@@ -130,7 +128,6 @@ def get_score(id):
     except FileNotFoundError:
         score = 0
     return score
-
 
 def score_point(fencer_id):
     fencer_score_file = 'fencer#' + fencer_id + "_score.txt"
