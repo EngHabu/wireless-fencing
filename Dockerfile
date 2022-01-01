@@ -5,4 +5,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./webserver /code/webserver
 
-CMD ["python", "main.py"]
+CMD ["python", "-m", "uvicorn", "main:app", "--reload"]

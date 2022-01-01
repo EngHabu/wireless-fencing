@@ -5,6 +5,13 @@ import datetime
 import os
 import threading
 import time
+import asyncio
+
+class Event_ts(asyncio.Event):
+    #TODO: clear() method
+    def set(self):
+        #FIXME: The _loop attribute is not documented as public api!
+        self._loop.call_soon_threadsafe(super().set)
 
 app = FastAPI()
 
@@ -24,7 +31,7 @@ MIN_TIME_BETWEEN_TOUCHES_MILLISECONDS = 1000  # set as an upper limit to fencer 
 last_touch_time = datetime.datetime.now()
 last_touch_fencer_id = ""
 
-point_scored = threading.Event()
+point_scored = Event_ts()
 
 @app.get("/")
 async def get():
@@ -62,20 +69,19 @@ async def get(id: str):
         return
 
     score_point(id)
-    global point_scored
     point_scored.set()
 
     return get_score(id)
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    global point_scored
     await websocket.accept()
     while True:
         # TODO: make that event based
-        # print("waiting...")
-        # point_scored.wait()
-        time.sleep(1)
+        print("waiting...")
+        await point_scored.wait()
+        point_scored.clear()
+        # time.sleep(1)
 
         print('refreshing scoreboard..')
         updated_score = fencer1 + "," + str(get_score(fencer1_id)) + "," + fencer2 + "," + str(get_score(fencer2_id))

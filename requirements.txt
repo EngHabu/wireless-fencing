@@ -14,17 +14,29 @@ fastapi==0.70.0
     # via -r requirements.in
 h11==0.12.0
     # via uvicorn
+httptools==0.3.0
+    # via uvicorn
 idna==3.3
     # via anyio
 pydantic==1.8.2
     # via
     #   -r requirements.in
     #   fastapi
+python-dotenv==0.19.2
+    # via uvicorn
+pyyaml==6.0
+    # via uvicorn
 sniffio==1.2.0
     # via anyio
 starlette==0.16.0
     # via fastapi
 typing-extensions==4.0.1
     # via pydantic
-uvicorn==0.16.0
+uvicorn[standard]==0.16.0
     # via -r requirements.in
+uvloop==0.16.0
+    # via uvicorn
+watchgod==0.7
+    # via uvicorn
+websockets==10.1
+    # via uvicorn
