@@ -130,3 +130,4 @@ dmypy.json
 
 # local output fies
 fencer*_score.txt
+arduino_secrets.h
