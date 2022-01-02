@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>New Bout</title>
+    </head>
+    <body>
+        <h2>Enter fencers names:</h2>
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="fencer1" autocomplete="off"/>
+            <input type="text" id="fencer2" autocomplete="off"/>
+            <button>Submit</button>
+        </form>
+        <ul id='messages'>
+        </ul>
+        <script>
+            var ws = new WebSocket("ws://localhost:8000/ws");
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                var content = document.createTextNode(event.data)
+                message.appendChild(content)
+                messages.appendChild(message)
+            };
+            function sendMessage(event) {
+                var fencer1 = document.getElementById("fencer1")
+                var fencer2 = document.getElementById("fencer2")
+                var data = fencer1.value + "," + fencer2.value
+                ws.send(data)
+                fencer1.value = ''
+                fencer2.value = ''
+
+                // TODO: Re-direct to the live scoreboard
+                // window.location.href = ("http://localhost:8000/");
+                event.preventDefault()
+            }
+        </script>
+    </body>
+</html>
