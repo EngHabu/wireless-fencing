@@ -141,7 +141,28 @@
       console.log('Disconnected!');
     };
 
+    function ping() {
+      ws.send('__ping__');
+      tm = setTimeout(function () {
+        /// ---connection closed ///
+      }, 1000);
+    }
+
+    function pong() {
+      clearTimeout(tm);
+    }
+
+    ws.onopen = function () {
+      setInterval(ping, 1000);
+    }
+
     ws.onmessage = function (event) {
+      var msg = event.data;
+      if (msg == '__pong__') {
+        pong();
+        return;
+      }
+
       var fencer1_name = document.getElementById('fencer1_name')
       var fencer1_score = document.getElementById('fencer1_score')
       var fencer2_name = document.getElementById('fencer2_name')
