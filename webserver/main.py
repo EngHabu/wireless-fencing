@@ -5,8 +5,17 @@ import datetime
 import os
 import threading
 import time
+import asyncio
+from fastapi.staticfiles import StaticFiles
+
+class Event_ts(asyncio.Event):
+    #TODO: clear() method
+    def set(self):
+        #FIXME: The _loop attribute is not documented as public api!
+        self._loop.call_soon_threadsafe(super().set)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="webserver/static"), name="static")
 
 hostName = "0.0.0.0"
 serverPort = 8080
@@ -24,15 +33,15 @@ MIN_TIME_BETWEEN_TOUCHES_MILLISECONDS = 1000  # set as an upper limit to fencer 
 last_touch_time = datetime.datetime.now()
 last_touch_fencer_id = ""
 
-point_scored = threading.Event()
+point_scored = Event_ts()
 
 @app.get("/")
 async def get():
-    return HTMLResponse(get_html("pages/scoreboard.html"))
+    return HTMLResponse(get_html("webserver/pages/scoreboard.html"))
 
 @app.get("/fencers")
 async def get():
-    return HTMLResponse(get_html("pages/fencers.html"))
+    return HTMLResponse(get_html("webserver/pages/fencers.html"))
 
 @app.get("/newbout")
 async def get(fencer1_name: str, fencer2_name: str):
@@ -60,18 +69,21 @@ async def get(id: str):
         return
 
     score_point(id)
-    global point_scored
     point_scored.set()
 
     return get_score(id)
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    global point_scored
     await websocket.accept()
+    print('refreshing scoreboard..')
+    updated_score = fencer1 + "," + str(get_score(fencer1_id)) + "," + fencer2 + "," + str(get_score(fencer2_id))
+    await websocket.send_text(updated_score)
+
     while True:
         print("waiting...")
-        point_scored.wait()
+        await point_scored.wait()
+        point_scored.clear()
 
         print('refreshing scoreboard..')
         updated_score = fencer1 + "," + str(get_score(fencer1_id)) + "," + fencer2 + "," + str(get_score(fencer2_id))

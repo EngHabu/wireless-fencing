@@ -8,3 +8,6 @@ docker_push: docker_build
 
 docker_run: docker_build
 	docker run -p 8080:8080 ghcr.io/enghabu/wireless-fencing:$(GIT_COMMIT)
+
+start-server:
+	python -m uvicorn webserver.main:app --reload
