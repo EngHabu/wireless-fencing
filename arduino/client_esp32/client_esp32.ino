@@ -2,10 +2,11 @@
 #include "WiFi.h"
 #include <HTTPClient.h>
 
-//#include "arduino_secrets.h"
-///////please enter your sensitive data in the Secret tab/arduino_secrets.h
-const char *ssid = "TheNetwork"; // your network SSID (name)
-const char *pass = "P@$$w0rd";   // your network password (use for WPA, or use as key for WEP)
+#include "arduino_secrets.h"
+//please enter your sensitive data in the Secret tab/arduino_secrets.h
+
+const char *ssid = WIFI_SSID; // your network SSID (name)
+const char *pass = WIFI_SECRET;   // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;                // your network key Index number (needed only for WEP)
 
 int status = WL_IDLE_STATUS;
@@ -13,7 +14,7 @@ int status = WL_IDLE_STATUS;
 // use the numeric IP instead of the name for the server:
 //IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
 const char *server = "http://libki.local:31622"; // name address for Google (using DNS)
-String userID = "1";
+String userID = "2";
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server
@@ -21,11 +22,14 @@ String userID = "1";
 WiFiClient client;
 
 // constants won't change. They're used here to set pin numbers:
-const int buttonPin = 2; // the number of the pushbutton pin
+const int buttonPin = 14; // the number of the pushbutton pin
 const int ledPin = 13;   // the number of the LED pin
+const int scoreThreshold = 100;
 
 // variables will change:
 int buttonState = 0; // variable for reading the pushbutton status
+bool isPressed = false;
+int continousHighLoops = 0;
 
 void initWiFi()
 {
@@ -62,14 +66,23 @@ void loop()
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH)
   {
-    // turn LED on:
-    digitalWrite(ledPin, HIGH);
-    reportPoint();
+//    Serial.print("Button state is High\r\n");
+    if (!isPressed) {
+      Serial.print("Button state is not pressed, pressing it\r\n");
+      isPressed = true;
+      // turn LED on:
+      digitalWrite(ledPin, HIGH);
+      reportPoint();
+    }
   }
   else
   {
-    // turn LED off:
-    digitalWrite(ledPin, LOW);
+    if (isPressed) {
+      Serial.print("Button state is low\r\n");
+      isPressed = false;
+      // turn LED off:
+      digitalWrite(ledPin, LOW);
+    }    
   }
 }
 
