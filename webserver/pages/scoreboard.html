@@ -99,6 +99,7 @@
     </div>
   </div>
 
+
   <script type="text/javascript" src="static/js/reconnecting-websocket.min.js"></script>
   <script>
     var fencer1_area = document.getElementById(`fencer1_area`)
@@ -129,8 +130,13 @@
       var ws_scheme = "ws://"
     };
 
-    var ws = new WebSocket(ws_scheme + location.host + "/ws");
+    var ws = new ReconnectingWebSocket(ws_scheme + location.host + "/ws");
     ws.onmessage = function (event) {
+      var fencer1_name = document.getElementById('fencer1_name')
+      var fencer1_score = document.getElementById('fencer1_score')
+      var fencer2_name = document.getElementById('fencer2_name')
+      var fencer2_score = document.getElementById('fencer2_score')
+
       // data is sent in the following format fencer1,score,fencer2,score
       var data = event.data.split(",");
       var fencer1_new_score = data[1]
@@ -142,16 +148,6 @@
         beep()
       } else if (fencer2_score.innerHTML !== fencer2_new_score) {
         flash_background("fencer2")
-        beep()
-      }
-
-      // data is sent in the following format fencer1,score,fencer2,score
-      var data = event.data.split(",");
-      var fencer1_new_score = data[1]
-      var fencer2_new_score = data[3]
-
-      // score change?
-      if (fencer1_score.innerHTML !== fencer1_new_score || fencer2_score.innerHTML !== fencer2_new_score) {
         beep()
       }
 
