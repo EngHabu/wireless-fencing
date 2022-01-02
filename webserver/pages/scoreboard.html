@@ -80,12 +80,12 @@
     <div id="fencer1_area" class="column">
       <h2>&#129338;</h2>
       <h2 id="fencer1_name" class="fencer">Unnamed fencer1</h2>
-      <label id="fencer1_score" class="score">0</label>
+      <label id="fencer1_score" class="score">-1</label>
     </div>
     <div id="fencer2_area" class="column">
       <h2>&#129338;</h2>
       <h2 id="fencer2_name" class="fencer">Unnamed fencer2</h2>
-      <label id="fencer2_score" class="score">0</label>
+      <label id="fencer2_score" class="score">-1</label>
     </div>
   </div>
   <div class="row">
@@ -143,10 +143,13 @@
       var fencer2_new_score = data[3]
 
       // score change?
-      if (fencer1_score.innerHTML !== fencer1_new_score) {
+      var initial_value = "-1";
+      if (fencer1_score.innerHTML !== initial_value && fencer1_score.innerHTML !== fencer1_new_score) {
         flash_background("fencer1")
         beep()
-      } else if (fencer2_score.innerHTML !== fencer2_new_score) {
+      }
+
+      if (fencer2_score.innerHTML !== initial_value && fencer2_score.innerHTML !== fencer2_new_score) {
         flash_background("fencer2")
         beep()
       }
@@ -157,14 +160,13 @@
       fencer2_score.innerHTML = fencer2_new_score
 
       // TODO: Make that configurable
-      winning_score = "15"
+      winning_score = "10"
       winner_gif = document.getElementById('winner_gif');
 
       if (fencer1_new_score === winning_score || fencer2_new_score === winning_score) {
         if (!winner_declared) {
           beep()
           winner_gif.style.visibility = 'visible';
-          alert("We have a winnner!")
           winner_declared = true
         }
       }

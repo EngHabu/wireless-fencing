@@ -76,12 +76,14 @@ async def get(id: str):
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    print('refreshing scoreboard..')
+    updated_score = fencer1 + "," + str(get_score(fencer1_id)) + "," + fencer2 + "," + str(get_score(fencer2_id))
+    await websocket.send_text(updated_score)
+
     while True:
-        # TODO: make that event based
         print("waiting...")
         await point_scored.wait()
         point_scored.clear()
-        # time.sleep(1)
 
         print('refreshing scoreboard..')
         updated_score = fencer1 + "," + str(get_score(fencer1_id)) + "," + fencer2 + "," + str(get_score(fencer2_id))
